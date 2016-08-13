@@ -10,8 +10,8 @@ MongoClient.connect(url, function(err, database) {
 });
 
 exports.addPost = function(json) {
-    db.collection('sensor_input').insertOne(json.time = 3, function(err, res) {
+    db.collection('sensor_input').insertOne(json, function(err, res) {
         assert.equal(err, null);
-        console.log("Inserted sensor input from: " + json.SensorInput.name);
+        console.log("Inserted sensor input from: " + json.name);
     });
 }
