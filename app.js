@@ -1,17 +1,32 @@
 var express = require('express');
 var app = express();
-var mongoManager = require('./mongo-manager');
-var bodyParser = require('body-parser');
+var router = express.Router();
+var mongoManager = require('./lib/mongo-manager');
 
-app.use(require('body-parser').json());
+router.use(function (req,res,next) {
+    console.log(req.method + " at " + Date());
+    next();
+});
+router.use('/data', require('body-parser').json());
 
-app.post('/', function(req, res) {
+router.get("/",function(req,res){
+    res.sendFile(__dirname + '/views/index.html');
+});
+
+router.post('/data', function(req, res) {
     mongoManager.addPost(req.body);
     res.send("Success");
 })
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
+app.use("/",router);
+
+app.use("*",function(req,res){
+    res.sendFile(__dirname + "/views/error.html");
+});
+
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).sendFile(__dirname + "/views/error.html");
 });
 
 app.listen(3000, function () {
